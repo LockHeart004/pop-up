@@ -2,20 +2,15 @@
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vivaldi Pop-Up</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Vivaldi Chat</title>
     <link rel="stylesheet" href="style.css">
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
 </head>
 <body onload="verifierAcces()">
 
-    <div id="chat-bubble" onclick="toggleChat()">
-        <div id="notif-dot"></div>
-        V
-    </div>
-
-    <div id="app" style="display:none;" class="hidden">
+    <div id="app">
         <div id="hide-screen"></div>
 
         <header>
@@ -24,7 +19,7 @@
         </header>
 
         <div id="zone-pseudo">
-            <input type="text" id="pseudo-input" placeholder="Pseudo...">
+            <input type="text" id="pseudo-input" placeholder="Identifiant de session...">
             <button onclick="definirPseudo()">REJOINDRE</button>
         </div>
 
@@ -40,8 +35,8 @@
             </div>
 
             <div class="input-area">
-                <input type="text" id="msg-input" placeholder="Message...">
-                <button onclick="envoyerMessage()">ENVOYER</button>
+                <input type="text" id="msg-input" placeholder="Écrire un message...">
+                <button onclick="envoyerMessage()">OK</button>
             </div>
         </div>
 
