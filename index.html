@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Projet Vivaldi - Chat</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-database.js"></script>
+</head>
+<body onload="verifierAcces()">
+
+    <div id="app" style="display:none;">
+        <header>
+            <h1>SÉCURITÉ VIVALDI</h1>
+            <button id="btn-toggle-view" onclick="basculerAffichage()">🔒 Masquer</button>
+        </header>
+
+        <div id="zone-pseudo">
+            <input type="text" id="pseudo-input" placeholder="Pseudo...">
+            <button onclick="definirPseudo()">REJOINDRE</button>
+        </div>
+
+        <div id="zone-chat" style="display:none;">
+            <div id="notif-mention">⚠️ MENTIONNÉ ! <button onclick="lireMention()">OK</button></div>
+            <div id="messages-display"></div>
+            
+            <div class="input-area">
+                <input type="text" id="msg-input" placeholder="Message (utilisez @pseudo)">
+                <button onclick="envoyerMessage()">ENVOYER</button>
+            </div>
+
+            <footer>
+                <button id="btn-admin" onclick="accesAdmin()">🛠️ ADMIN</button>
+                <button id="btn-nettoyer" style="display:none;" onclick="nettoyerSalon()">🗑️ VIDER LE SALON</button>
+            </footer>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
