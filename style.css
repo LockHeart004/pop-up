@@ -1,102 +1,63 @@
 body {
-    background-color: transparent; /* Pour l'effet flottant */
-    font-family: 'Courier New', Courier, monospace;
+    background: transparent;
     margin: 0;
+    padding: 0;
     overflow: hidden;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
-/* La Bulle style Messenger */
 #chat-bubble {
-    position: fixed;
-    bottom: 20px;
-    right: 20px;
-    width: 60px;
-    height: 60px;
-    background: #000;
-    border: 2px solid #ff4444;
-    border-radius: 50%;
-    color: #ff4444;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    font-size: 24px;
-    font-weight: bold;
-    cursor: pointer;
-    box-shadow: 0 0 15px #ff4444;
-    z-index: 9999;
-    transition: 0.3s;
+    position: fixed; bottom: 15px; right: 15px;
+    width: 50px; height: 50px;
+    background: #000; border: 2px solid #ff4444; border-radius: 50%;
+    color: #ff4444; display: flex; justify-content: center; align-items: center;
+    font-weight: bold; cursor: pointer; box-shadow: 0 0 10px #ff4444; z-index: 9999;
 }
-
-#chat-bubble:hover { transform: scale(1.1); }
 
 #notif-dot {
-    position: absolute;
-    top: 5px;
-    right: 5px;
-    width: 15px;
-    height: 15px;
-    background: gold;
-    border-radius: 50%;
-    display: none;
-    box-shadow: 0 0 5px gold;
+    position: absolute; top: 2px; right: 2px;
+    width: 12px; height: 12px; background: gold; border-radius: 50%; display: none;
 }
 
-/* La Fenêtre Pop-up */
 #app {
-    position: fixed;
-    bottom: 90px;
-    right: 20px;
-    width: 320px;
-    height: 450px;
-    background: #0a0a0a;
-    border: 2px solid #ff4444;
-    display: flex;
-    flex-direction: column;
-    box-shadow: 0 0 20px #ff4444;
-    z-index: 9998;
+    position: fixed; bottom: 75px; right: 15px;
+    width: 320px; height: 450px;
+    background: #0a0a0a; border: 2px solid #ff4444;
+    display: flex; flex-direction: column;
+    box-shadow: 0 0 20px #ff4444; z-index: 9998;
+    background-position: center; background-size: cover;
 }
 
 .hidden { display: none !important; }
 
+#hide-screen {
+    position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+    background: url('hide.png') no-repeat center center;
+    background-size: cover; z-index: 10000; display: none;
+}
+
 header {
-    background: #1a1a1a;
-    padding: 10px;
-    color: #ff4444;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    font-size: 0.8em;
-    border-bottom: 1px solid #ff4444;
+    background: #151515; padding: 8px; color: #ff4444;
+    display: flex; justify-content: space-between; align-items: center;
+    border-bottom: 1px solid #ff4444; font-size: 12px;
 }
 
-#messages-display {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 10px;
-    background: #000;
-    color: #eee;
+#messages-display { flex-grow: 1; overflow-y: auto; padding: 10px; color: #fff; }
+
+.msg-item { margin-bottom: 8px; border-bottom: 1px solid #1a1a1a; padding-bottom: 4px; }
+.msg-pseudo { color: #ff4444; font-weight: bold; margin-right: 5px; }
+
+.admin-action { cursor: pointer; font-size: 10px; margin-left: 5px; opacity: 0.5; }
+.admin-action:hover { opacity: 1; }
+
+#admin-panel { display: none; background: #111; padding: 5px; border-top: 1px solid #333; }
+.admin-tools-row { display: flex; justify-content: space-between; align-items: center; }
+
+.input-area { padding: 10px; display: flex; gap: 5px; background: #0a0a0a; }
+input { background: #111; border: 1px solid #333; color: white; padding: 5px; flex-grow: 1; }
+button { background: #ff4444; border: none; color: black; font-weight: bold; cursor: pointer; }
+
+#btn-admin-secret {
+    position: absolute; bottom: 0; right: 0;
+    width: 15px; height: 15px; background: transparent; z-index: 10001; cursor: pointer;
 }
-
-.input-area { padding: 10px; display: flex; gap: 5px; }
-
-input {
-    background: #111;
-    border: 1px solid #ff4444;
-    color: white;
-    padding: 5px;
-    flex-grow: 1;
-}
-
-button {
-    background: #ff4444;
-    color: black;
-    border: none;
-    padding: 5px 10px;
-    cursor: pointer;
-    font-weight: bold;
-}
-
-#notif-mention { background: gold; color: black; padding: 5px; text-align: center; display: none; font-size: 0.7em; }
-.msg-item { margin-bottom: 8px; font-size: 0.9em; border-bottom: 1px solid #222; padding-bottom: 4px; }
-.msg-pseudo { color: #ff8888; }
-footer { padding: 5px; display: flex; gap: 5px; }
