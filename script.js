@@ -4,9 +4,9 @@ const PWD_ADMIN = "0000";
 const CLE_CESAR = 8;
 
 const firebaseConfig = {
-    apiKey: "TON_API_KEY",
-    databaseURL: "https://TON_PROJET.firebaseio.com",
-    projectId: "TON_PROJET_ID"
+    apiKey: "AIzaSyDJoijuxHAUuRGKbaFvIRTRCuW4HAhTV1U",
+    databaseURL: "https://heart-project-community-default-rtdb.firebaseio.com",
+    projectId: "heart-project-community"
 };
 
 // Initialisation
