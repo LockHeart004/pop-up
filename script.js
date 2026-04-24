@@ -1,8 +1,9 @@
 // --- CONFIGURATION ---
 const PWD_ACCES = "pop-up-2026";
-const PWD_ADMIN = "21072003"; 
+const PWD_ADMIN = "21072003";
 const CLE_CESAR = 8;
 
+// CONFIGURATION FIREBASE (À remplir avec tes infos)
 const firebaseConfig = {
     apiKey: "AIzaSyDJoijuxHAUuRGKbaFvIRTRCuW4HAhTV1U",
     databaseURL: "https://heart-project-community-default-rtdb.firebaseio.com",
@@ -17,7 +18,7 @@ let isAdmin = false;
 let affichageEnClair = true;
 let tousLesMessages = [];
 
-// --- RACCOURCI CLAVIER : Alt + H ---
+// RACCOURCI CLAVIER : Alt + H
 document.addEventListener('keydown', (e) => {
     if (e.altKey && e.key.toLowerCase() === 'h') {
         e.preventDefault();
@@ -26,60 +27,21 @@ document.addEventListener('keydown', (e) => {
     }
 });
 
-// --- ACCÈS & BULLE ---
 function verifierAcces() {
-    let s = prompt("Code :");
+    let s = prompt("Veuillez entrer le code d'accès au serveur :");
     if (s && s.trim().toLowerCase() === PWD_ACCES) {
-        console.log("Connecté.");
+        document.getElementById('app').style.display = 'flex';
     } else {
         window.location.reload();
     }
 }
 
-function toggleChat() {
-    const app = document.getElementById("app");
-    app.classList.toggle("hidden");
-    if (!app.classList.contains("hidden")) {
-        app.style.display = "flex";
-        document.getElementById('notif-dot').style.display = 'none';
-    }
-}
-
-// --- LOGIQUE ADMIN ---
-function accesAdmin() {
-    if (prompt("ADMIN CODE :") === PWD_ADMIN) {
-        isAdmin = true;
-        document.getElementById('admin-panel').style.display = 'block';
-        alert("Mode Admin Activé.");
-        afficherMessages();
-    }
-}
-
-function supprimerMsg(id) {
-    if (isAdmin && confirm("Supprimer ?")) db.ref('messages/' + id).remove();
-}
-
-function modifierMsg(id, texteCode) {
-    if (!isAdmin) return;
-    let n = prompt("Modifier :", decrypter(texteCode));
-    if (n) db.ref('messages/' + id).update({ m: crypter(n) });
-}
-
-function changerTheme(c) {
-    const app = document.getElementById('app');
-    app.style.borderColor = c;
-    app.style.boxShadow = `0 0 20px ${c}`;
-}
-
-// --- FONCTIONS CHAT ---
-function crypter(t) { return t.split('').map(c => String.fromCharCode(c.charCodeAt(0) + CLE_CESAR)).join(''); }
-function decrypter(t) { return t.split('').map(c => String.fromCharCode(c.charCodeAt(0) - CLE_CESAR)).join(''); }
-
 function definirPseudo() {
-    monPseudo = document.getElementById('pseudo-input').value.trim();
+    const input = document.getElementById('pseudo-input');
+    monPseudo = input.value.trim();
     if (monPseudo) {
         document.getElementById('zone-pseudo').style.display = 'none';
-        document.getElementById('zone-chat').style.display = 'block';
+        document.getElementById('zone-chat').style.display = 'flex';
         ecouterMessages();
     }
 }
@@ -106,11 +68,13 @@ function afficherMessages() {
     tousLesMessages.forEach(msg => {
         let texte = affichageEnClair ? decrypter(msg.m) : msg.m;
         let tools = isAdmin ? `<span class="admin-action" onclick="supprimerMsg('${msg.id}')">❌</span><span class="admin-action" onclick="modifierMsg('${msg.id}','${msg.m}')">✏️</span>` : "";
-        
-        box.innerHTML += `<div class="msg-item"><span class="msg-pseudo">${msg.u}:</span>${texte}${tools}</div>`;
+        box.innerHTML += `<div class="msg-item"><span class="msg-pseudo">${msg.u}:</span> ${texte}${tools}</div>`;
     });
     box.scrollTop = box.scrollHeight;
 }
+
+function crypter(t) { return t.split('').map(c => String.fromCharCode(c.charCodeAt(0) + CLE_CESAR)).join(''); }
+function decrypter(t) { return t.split('').map(c => String.fromCharCode(c.charCodeAt(0) - CLE_CESAR)).join(''); }
 
 function basculerAffichage() {
     affichageEnClair = !affichageEnClair;
@@ -118,5 +82,28 @@ function basculerAffichage() {
     afficherMessages();
 }
 
-function nettoyerSalon() { if (isAdmin && confirm("Vider tout ?")) db.ref('messages/').remove(); }
+// ADMIN FUNCTIONS
+function accesAdmin() {
+    if (prompt("CODE ADMIN REQUIS :") === PWD_ADMIN) {
+        isAdmin = true;
+        document.getElementById('admin-panel').style.display = 'block';
+        alert("MODE ADMIN ACTIVÉ");
+        afficherMessages();
+    }
+}
+
+function supprimerMsg(id) { if (isAdmin && confirm("Supprimer ce message ?")) db.ref('messages/' + id).remove(); }
+function modifierMsg(id, texteCode) {
+    if (!isAdmin) return;
+    let n = prompt("Modifier le message :", decrypter(texteCode));
+    if (n) db.ref('messages/' + id).update({ m: crypter(n) });
+}
+
+function changerTheme(c) {
+    const app = document.getElementById('app');
+    app.style.borderColor = c;
+    app.style.boxShadow = `0 0 20px ${c}`;
+}
+
+function nettoyerSalon() { if (isAdmin && confirm("VOULEZ-VOUS TOUT EFFACER ?")) db.ref('messages/').remove(); }
 function lireMention() { document.getElementById('notif-mention').style.display = 'none'; }
