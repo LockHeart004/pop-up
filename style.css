@@ -1,58 +1,102 @@
 body {
-    background-color: #0a0a0a;
-    color: #ff4444;
+    background-color: transparent; /* Pour l'effet flottant */
     font-family: 'Courier New', Courier, monospace;
     margin: 0;
+    overflow: hidden;
+}
+
+/* La Bulle style Messenger */
+#chat-bubble {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    width: 60px;
+    height: 60px;
+    background: #000;
+    border: 2px solid #ff4444;
+    border-radius: 50%;
+    color: #ff4444;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
-}
-
-#app {
-    width: 90%;
-    max-width: 500px;
-    border: 2px solid #ff4444;
-    padding: 20px;
+    font-size: 24px;
+    font-weight: bold;
+    cursor: pointer;
     box-shadow: 0 0 15px #ff4444;
+    z-index: 9999;
+    transition: 0.3s;
 }
 
-header { display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid #ff4444; padding-bottom: 10px; }
+#chat-bubble:hover { transform: scale(1.1); }
+
+#notif-dot {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    width: 15px;
+    height: 15px;
+    background: gold;
+    border-radius: 50%;
+    display: none;
+    box-shadow: 0 0 5px gold;
+}
+
+/* La Fenêtre Pop-up */
+#app {
+    position: fixed;
+    bottom: 90px;
+    right: 20px;
+    width: 320px;
+    height: 450px;
+    background: #0a0a0a;
+    border: 2px solid #ff4444;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 0 20px #ff4444;
+    z-index: 9998;
+}
+
+.hidden { display: none !important; }
+
+header {
+    background: #1a1a1a;
+    padding: 10px;
+    color: #ff4444;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.8em;
+    border-bottom: 1px solid #ff4444;
+}
 
 #messages-display {
-    height: 350px;
+    flex-grow: 1;
     overflow-y: auto;
-    margin: 20px 0;
     padding: 10px;
-    background: #111;
-    border-left: 3px solid #ff4444;
+    background: #000;
+    color: #eee;
 }
 
+.input-area { padding: 10px; display: flex; gap: 5px; }
+
 input {
-    background: #000;
+    background: #111;
     border: 1px solid #ff4444;
-    color: #fff;
-    padding: 10px;
-    width: calc(100% - 24px);
+    color: white;
+    padding: 5px;
+    flex-grow: 1;
 }
 
 button {
     background: #ff4444;
-    color: #000;
+    color: black;
     border: none;
-    padding: 10px;
+    padding: 5px 10px;
     cursor: pointer;
     font-weight: bold;
-    margin-top: 5px;
 }
 
-#notif-mention {
-    background: gold;
-    color: black;
-    padding: 5px;
-    text-align: center;
-    display: none;
-}
-
-.msg-item { margin-bottom: 10px; font-size: 0.9em; }
-.msg-pseudo { color: #ff8888; font-weight: bold; }
+#notif-mention { background: gold; color: black; padding: 5px; text-align: center; display: none; font-size: 0.7em; }
+.msg-item { margin-bottom: 8px; font-size: 0.9em; border-bottom: 1px solid #222; padding-bottom: 4px; }
+.msg-pseudo { color: #ff8888; }
+footer { padding: 5px; display: flex; gap: 5px; }
