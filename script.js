@@ -1,15 +1,12 @@
-// ==========================================
-// 1. VARIABLES ET CONFIGURATION (D'ABORD !)
-// ==========================================
-const PWD_ACCES = "pop-up-2026"; 
-const PWD_ADMIN = "0000";        
+// --- CONFIGURATION ---
+const PWD_ACCES = "pop-up-2026";
+const PWD_ADMIN = "0000";
 const CLE_CESAR = 8;
 
-// REMPLACE BIEN CES 3 LIGNES :
 const firebaseConfig = {
-    apiKey: "AIzaSyDJoijuxHAUuRGKbaFvIRTRCuW4HAhTV1U", 
-    databaseURL: "https://heart-project-community-default-rtdb.firebaseio.com", // DOIT COMMENCER PAR HTTPS
-    projectId: "heart-project-community"
+    apiKey: "TON_API_KEY",
+    databaseURL: "https://TON_PROJET.firebaseio.com",
+    projectId: "TON_PROJET_ID"
 };
 
 // Initialisation
@@ -20,24 +17,29 @@ let monPseudo = "";
 let affichageEnClair = true;
 let tousLesMessages = [];
 
-// ==========================================
-// 2. FONCTION DE VÉRIFICATION (APPELÉE AU CHARGEMENT)
-// ==========================================
+// --- LOGIQUE D'ACCÈS ---
 function verifierAcces() {
-    let saisie = prompt("Entrez le code d'accès :");
+    let saisie = prompt("Code d'accès :");
     if (saisie === null) return;
-
     if (saisie.trim().toLowerCase() === PWD_ACCES) {
-        document.getElementById('app').style.display = 'block';
+        // L'app reste en class "hidden" au début, on l'active juste en mémoire
+        console.log("Accès autorisé. Cliquez sur la bulle.");
     } else {
         alert("ACCÈS RÉVOQUÉ.");
         window.location.reload();
     }
 }
 
-// ==========================================
-// 3. LE RESTE DES FONCTIONS
-// ==========================================
+function toggleChat() {
+    const app = document.getElementById("app");
+    app.classList.toggle("hidden");
+    if (!app.classList.contains("hidden")) {
+        app.style.display = "flex";
+        document.getElementById('notif-dot').style.display = 'none';
+    }
+}
+
+// --- CHIFFREMENT ---
 function crypter(t) { return t.split('').map(c => String.fromCharCode(c.charCodeAt(0) + CLE_CESAR)).join(''); }
 function decrypter(t) { return t.split('').map(c => String.fromCharCode(c.charCodeAt(0) - CLE_CESAR)).join(''); }
 
@@ -47,6 +49,7 @@ function basculerAffichage() {
     afficherMessages();
 }
 
+// --- CORE CHAT ---
 function definirPseudo() {
     monPseudo = document.getElementById('pseudo-input').value.trim();
     if (monPseudo) {
@@ -77,10 +80,20 @@ function afficherMessages() {
     box.innerHTML = "";
     tousLesMessages.forEach(msg => {
         let texteFinal = affichageEnClair ? decrypter(msg.m) : msg.m;
+        
+        // Notif si mentionné et que le chat est fermé
+        if (texteFinal.includes(`@${monPseudo}`)) {
+            if (document.getElementById('app').classList.contains('hidden')) {
+                document.getElementById('notif-dot').style.display = 'block';
+            } else {
+                document.getElementById('notif-mention').style.display = 'block';
+            }
+        }
         box.innerHTML += `<div class="msg-item"><span class="msg-pseudo">${msg.u}:</span> ${texteFinal}</div>`;
     });
     box.scrollTop = box.scrollHeight;
 }
 
-function accesAdmin() { if (prompt("Code Admin :") === PWD_ADMIN) document.getElementById('btn-nettoyer').style.display = 'inline-block'; }
+function accesAdmin() { if (prompt("Admin :") === PWD_ADMIN) document.getElementById('btn-nettoyer').style.display = 'block'; }
 function nettoyerSalon() { if (confirm("Vider ?")) db.ref('messages/').remove(); }
+function lireMention() { document.getElementById('notif-mention').style.display = 'none'; }
