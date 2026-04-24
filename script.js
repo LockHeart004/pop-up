@@ -1,48 +1,39 @@
 // 1. CONFIGURATION FIREBASE
-// Remplace les valeurs ci-dessous par celles de ton projet Firebase
+// Remplace par tes vraies clés Firebase
 const firebaseConfig = {
-    apiKey: "AIzaSyDJoijuxHAUuRGKbaFvIRTRCuW4HAhTV1U",
-    databaseURL: "https://heart-project-community-default-rtdb.firebaseio.com",
-    projectId: "heart-project-community"
+    apiKey: "TON_API_KEY",
+    databaseURL: "TON_URL_DATABASE",
+    projectId: "TON_PROJECT_ID"
 };
 
-// Initialisation de Firebase
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
-// 2. VARIABLES GLOBALES
-const HASH_GROUPE = "6071871239859f77f3a8f11812693892790938644e58a96435c2b04130f14652"; // Hash de "pop-up-2026"
+// 2. PARAMÈTRES DE L'APP
+const PWD_ACCES = "pop-up-2026"; // Le code d'entrée
+const PWD_ADMIN = "0000";        // Le code pour effacer les messages
 const CLE_CESAR = 8;
-const PWD_ADMIN = "0000"; // Ton code pour effacer les messages
 
 let monPseudo = "";
 let affichageEnClair = true;
 let tousLesMessages = [];
 
-// 3. SÉCURITÉ D'ENTRÉE (SHA-256)
-async function verifierAcces() {
-    let password = prompt("Code d'accès au serveur (pop-up-2026) :");
-    
-    if (password === null) return window.location.reload();
+// 3. SÉCURITÉ D'ENTRÉE (Simplifiée)
+function verifierAcces() {
+    let saisie = prompt("Entrez le code d'accès :");
 
-    // Nettoyage des espaces accidentels
-    password = password.trim();
+    if (saisie === null) return; // Si clic sur annuler
 
-    const encoder = new TextEncoder();
-    const data = encoder.encode(password);
-    const hashBuffer = await crypto.subtle.digest('SHA-256', data);
-    const hashArray = Array.from(new Uint8Array(hashBuffer));
-    const hashHex = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-
-    if (hashHex === HASH_GROUPE) {
+    // .trim() enlève les espaces et .toLowerCase() ignore les majuscules
+    if (saisie.trim().toLowerCase() === PWD_ACCES) {
         document.getElementById('app').style.display = 'block';
     } else {
-        alert("ACCÈS RÉVOQUÉ. Vérifiez l'orthographe exacte.");
+        alert("ACCÈS RÉVOQUÉ. Code incorrect.");
         window.location.reload();
     }
 }
 
-// 4. SYSTÈME DE CHIFFREMENT (CÉSAR)
+// 4. SYSTÈME DE CHIFFREMENT
 function crypter(t) { 
     return t.split('').map(c => String.fromCharCode(c.charCodeAt(0) + CLE_CESAR)).join(''); 
 }
@@ -53,7 +44,8 @@ function decrypter(t) {
 
 function basculerAffichage() {
     affichageEnClair = !affichageEnClair;
-    document.getElementById('btn-toggle-view').innerText = affichageEnClair ? "🔒 Masquer" : "👁️ Voir";
+    const btn = document.getElementById('btn-toggle-view');
+    btn.innerText = affichageEnClair ? "🔒 Masquer" : "👁️ Voir";
     afficherMessages();
 }
 
@@ -66,28 +58,23 @@ function definirPseudo() {
         document.getElementById('zone-chat').style.display = 'block';
         ecouterMessages();
     } else {
-        alert("Choisis un pseudo d'abord !");
+        alert("Choisis un pseudo !");
     }
 }
 
 function envoyerMessage() {
     const input = document.getElementById('msg-input');
     const texte = input.value.trim();
-    
     if (texte === "") return;
     
-    // Envoi du message crypté vers Firebase
     db.ref('messages/').push({
         u: monPseudo,
-        m: crypter(texte),
-        t: Date.now()
+        m: crypter(texte)
     });
-    
     input.value = "";
 }
 
 function ecouterMessages() {
-    // Cette fonction surveille la base de données en temps réel
     db.ref('messages/').on('value', (snap) => {
         tousLesMessages = [];
         const data = snap.val();
@@ -103,10 +90,9 @@ function afficherMessages() {
     box.innerHTML = "";
     
     tousLesMessages.forEach(msg => {
-        // Dépend de si l'utilisateur a cliqué sur "Voir" ou "Masquer"
         let texteFinal = affichageEnClair ? decrypter(msg.m) : msg.m;
         
-        // Gestion des notifications (@pseudo)
+        // Alerte si @pseudo est trouvé
         if (affichageEnClair && texteFinal.includes(`@${monPseudo}`)) {
             document.getElementById('notif-mention').style.display = 'block';
         }
@@ -117,26 +103,19 @@ function afficherMessages() {
                 <span class="msg-text">${texteFinal}</span>
             </div>`;
     });
-    
-    // Scroll automatique vers le bas
     box.scrollTop = box.scrollHeight;
 }
 
 // 6. FONCTIONS ADMIN
 function accesAdmin() {
-    let code = prompt("Mot de passe administrateur :");
-    if (code === PWD_ADMIN) {
+    if (prompt("Code Admin :") === PWD_ADMIN) {
         document.getElementById('btn-nettoyer').style.display = 'inline-block';
-        alert("Mode Admin activé.");
-    } else {
-        alert("Code incorrect.");
     }
 }
 
 function nettoyerSalon() {
-    if (confirm("Voulez-vous vraiment effacer TOUS les messages du serveur ?")) {
+    if (confirm("Vider toute la discussion ?")) {
         db.ref('messages/').remove();
-        alert("Mémoire vidée.");
     }
 }
 
