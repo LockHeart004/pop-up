@@ -16,9 +16,11 @@
     </div>
 
     <div id="app" style="display:none;" class="hidden">
-        <header id="chat-header">
+        <div id="hide-screen"></div>
+
+        <header>
             <span>SÉCURITÉ VIVALDI</span>
-            <button id="btn-toggle-view" onclick="basculerAffichage()">🔒 Masquer</button>
+            <button id="btn-toggle-view" onclick="basculerAffichage()">🔒</button>
         </header>
 
         <div id="zone-pseudo">
@@ -30,16 +32,20 @@
             <div id="notif-mention">⚠️ MENTION ! <button onclick="lireMention()">OK</button></div>
             <div id="messages-display"></div>
             
-            <div class="input-area">
-                <input type="text" id="msg-input" placeholder="Message (@pseudo)">
-                <button onclick="envoyerMessage()">ENVOYER</button>
+            <div id="admin-panel">
+                <div class="admin-tools-row">
+                    <input type="color" id="color-picker" onchange="changerTheme(this.value)">
+                    <button class="btn-danger" onclick="nettoyerSalon()">TOUT VIDER</button>
+                </div>
             </div>
 
-            <footer>
-                <button id="btn-admin" onclick="accesAdmin()">🛠️ ADMIN</button>
-                <button id="btn-nettoyer" style="display:none;" onclick="nettoyerSalon()">🗑️ VIDER</button>
-            </footer>
+            <div class="input-area">
+                <input type="text" id="msg-input" placeholder="Message...">
+                <button onclick="envoyerMessage()">ENVOYER</button>
+            </div>
         </div>
+
+        <div id="btn-admin-secret" onclick="accesAdmin()"></div>
     </div>
 
     <script src="script.js"></script>
