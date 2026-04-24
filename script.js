@@ -1,6 +1,6 @@
 // --- CONFIGURATION ---
 const PWD_ACCES = "pop-up-2026";
-const PWD_ADMIN = "0000";
+const PWD_ADMIN = "21072003"; 
 const CLE_CESAR = 8;
 
 const firebaseConfig = {
@@ -9,23 +9,29 @@ const firebaseConfig = {
     projectId: "heart-project-community"
 };
 
-// Initialisation
 firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 
 let monPseudo = "";
+let isAdmin = false;
 let affichageEnClair = true;
 let tousLesMessages = [];
 
-// --- LOGIQUE D'ACCÈS ---
+// --- RACCOURCI CLAVIER : Alt + H ---
+document.addEventListener('keydown', (e) => {
+    if (e.altKey && e.key.toLowerCase() === 'h') {
+        e.preventDefault();
+        const screen = document.getElementById('hide-screen');
+        screen.style.display = (screen.style.display === 'block') ? 'none' : 'block';
+    }
+});
+
+// --- ACCÈS & BULLE ---
 function verifierAcces() {
-    let saisie = prompt("Code d'accès :");
-    if (saisie === null) return;
-    if (saisie.trim().toLowerCase() === PWD_ACCES) {
-        // L'app reste en class "hidden" au début, on l'active juste en mémoire
-        console.log("Accès autorisé. Cliquez sur la bulle.");
+    let s = prompt("Code :");
+    if (s && s.trim().toLowerCase() === PWD_ACCES) {
+        console.log("Connecté.");
     } else {
-        alert("ACCÈS RÉVOQUÉ.");
         window.location.reload();
     }
 }
@@ -39,17 +45,36 @@ function toggleChat() {
     }
 }
 
-// --- CHIFFREMENT ---
+// --- LOGIQUE ADMIN ---
+function accesAdmin() {
+    if (prompt("ADMIN CODE :") === PWD_ADMIN) {
+        isAdmin = true;
+        document.getElementById('admin-panel').style.display = 'block';
+        alert("Mode Admin Activé.");
+        afficherMessages();
+    }
+}
+
+function supprimerMsg(id) {
+    if (isAdmin && confirm("Supprimer ?")) db.ref('messages/' + id).remove();
+}
+
+function modifierMsg(id, texteCode) {
+    if (!isAdmin) return;
+    let n = prompt("Modifier :", decrypter(texteCode));
+    if (n) db.ref('messages/' + id).update({ m: crypter(n) });
+}
+
+function changerTheme(c) {
+    const app = document.getElementById('app');
+    app.style.borderColor = c;
+    app.style.boxShadow = `0 0 20px ${c}`;
+}
+
+// --- FONCTIONS CHAT ---
 function crypter(t) { return t.split('').map(c => String.fromCharCode(c.charCodeAt(0) + CLE_CESAR)).join(''); }
 function decrypter(t) { return t.split('').map(c => String.fromCharCode(c.charCodeAt(0) - CLE_CESAR)).join(''); }
 
-function basculerAffichage() {
-    affichageEnClair = !affichageEnClair;
-    document.getElementById('btn-toggle-view').innerText = affichageEnClair ? "🔒 Masquer" : "👁️ Voir";
-    afficherMessages();
-}
-
-// --- CORE CHAT ---
 function definirPseudo() {
     monPseudo = document.getElementById('pseudo-input').value.trim();
     if (monPseudo) {
@@ -68,9 +93,9 @@ function envoyerMessage() {
 
 function ecouterMessages() {
     db.ref('messages/').on('value', (snap) => {
-        tousLesMessages = [];
         const data = snap.val();
-        for (let id in data) { tousLesMessages.push(data[id]); }
+        tousLesMessages = [];
+        for (let id in data) { tousLesMessages.push({id, ...data[id]}); }
         afficherMessages();
     });
 }
@@ -79,21 +104,19 @@ function afficherMessages() {
     const box = document.getElementById('messages-display');
     box.innerHTML = "";
     tousLesMessages.forEach(msg => {
-        let texteFinal = affichageEnClair ? decrypter(msg.m) : msg.m;
+        let texte = affichageEnClair ? decrypter(msg.m) : msg.m;
+        let tools = isAdmin ? `<span class="admin-action" onclick="supprimerMsg('${msg.id}')">❌</span><span class="admin-action" onclick="modifierMsg('${msg.id}','${msg.m}')">✏️</span>` : "";
         
-        // Notif si mentionné et que le chat est fermé
-        if (texteFinal.includes(`@${monPseudo}`)) {
-            if (document.getElementById('app').classList.contains('hidden')) {
-                document.getElementById('notif-dot').style.display = 'block';
-            } else {
-                document.getElementById('notif-mention').style.display = 'block';
-            }
-        }
-        box.innerHTML += `<div class="msg-item"><span class="msg-pseudo">${msg.u}:</span> ${texteFinal}</div>`;
+        box.innerHTML += `<div class="msg-item"><span class="msg-pseudo">${msg.u}:</span>${texte}${tools}</div>`;
     });
     box.scrollTop = box.scrollHeight;
 }
 
-function accesAdmin() { if (prompt("Admin :") === PWD_ADMIN) document.getElementById('btn-nettoyer').style.display = 'block'; }
-function nettoyerSalon() { if (confirm("Vider ?")) db.ref('messages/').remove(); }
+function basculerAffichage() {
+    affichageEnClair = !affichageEnClair;
+    document.getElementById('btn-toggle-view').innerText = affichageEnClair ? "🔒" : "👁️";
+    afficherMessages();
+}
+
+function nettoyerSalon() { if (isAdmin && confirm("Vider tout ?")) db.ref('messages/').remove(); }
 function lireMention() { document.getElementById('notif-mention').style.display = 'none'; }
