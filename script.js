@@ -1,9 +1,9 @@
 // 1. CONFIGURATION FIREBASE
 // Remplace les valeurs ci-dessous par celles de ton projet Firebase
 const firebaseConfig = {
-    apiKey: "TON_API_KEY",
-    databaseURL: "TON_URL_DATABASE",
-    projectId: "TON_PROJECT_ID"
+    apiKey: "AIzaSyDJoijuxHAUuRGKbaFvIRTRCuW4HAhTV1U",
+    databaseURL: "https://heart-project-community-default-rtdb.firebaseio.com",
+    projectId: "heart-project-community"
 };
 
 // Initialisation de Firebase
