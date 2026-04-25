@@ -86,7 +86,7 @@ function basculerAffichage() {
 function accesAdmin() {
     if (prompt("CODE ADMIN REQUIS :") === PWD_ADMIN) {
         isAdmin = true;
-        document.getElementById('admin-panel').style.display = 'block';
+        document.getElementById('admin-panel').style.display = 'flex';
         alert("MODE ADMIN ACTIVÉ");
         afficherMessages();
     }
