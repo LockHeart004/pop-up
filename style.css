@@ -1,32 +1,92 @@
-* {
-    box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 html, body {
     height: 100%;
     width: 100%;
     margin: 0;
     padding: 0;
-    background-color: #000;
-    overflow: hidden; /* Empêche le défilement de la page entière */
-    font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    background: #000;
+    overflow: hidden;
+    position: fixed; /* Empêche le rebond sur iOS/Android */
 }
 
 #app {
-    width: 100vw;
-    height: 100vh;
-    background: #0a0a0a;
     display: flex;
     flex-direction: column;
+    width: 100%;
+    height: 100%; /* Utilise toute la hauteur du téléphone */
+    background: #0a0a0a;
     border: 2px solid #ff4444;
     position: relative;
-    background-position: center;
     background-size: cover;
 }
 
+header {
+    flex: 0 0 50px; /* Hauteur fixe pour le haut */
+    background: #151515;
+    padding: 0 15px;
+    color: #ff4444;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #ff4444;
+}
+
+#zone-chat {
+    flex: 1; /* Prend tout l'espace restant */
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+#messages-display {
+    flex: 1; /* Le chat prend tout l'espace entre le header et l'input */
+    overflow-y: auto;
+    padding: 10px;
+    color: #fff;
+    background: rgba(0,0,0,0.5);
+    font-size: 14px;
+}
+
+.input-area {
+    flex: 0 0 auto; /* S'adapte au contenu (l'input) */
+    padding: 10px;
+    display: flex;
+    gap: 8px;
+    background: #111;
+    border-top: 1px solid #222;
+}
+
+#msg-input {
+    flex: 1;
+    background: #000;
+    border: 1px solid #444;
+    color: #fff;
+    padding: 12px;
+    font-size: 16px; /* Évite le zoom auto sur iPhone */
+    border-radius: 4px;
+}
+
+#send-btn {
+    background: #ff4444;
+    border: none;
+    padding: 0 20px;
+    font-weight: bold;
+    border-radius: 4px;
+}
+
+#admin-panel {
+    display: none;
+    padding: 10px;
+    background: #1a1a1a;
+    border-top: 1px solid #333;
+    justify-content: space-between;
+    display: none; /* Sera géré par le JS */
+}
+
+/* Écran camouflage */
 #hide-screen {
-    position: absolute;
-    top: 0; left: 0;
+    position: absolute; top: 0; left: 0;
     width: 100%; height: 100%;
     background: url('hide.png') no-repeat center center;
     background-size: cover;
@@ -34,91 +94,10 @@ html, body {
     display: none;
 }
 
-header {
-    background: #151515;
-    padding: 12px;
-    color: #ff4444;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #ff4444;
-    font-size: 14px;
-    letter-spacing: 1px;
-}
-
-#zone-pseudo {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    gap: 15px;
-    padding: 20px;
-}
-
-#zone-chat {
-    flex-grow: 1;
-    display: flex;
-    flex-direction: column;
-    height: calc(100% - 45px); /* Ajuste selon la taille du header */
-}
-
-#messages-display {
-    flex-grow: 1;
-    overflow-y: auto;
-    padding: 15px;
-    color: #fff;
-    background: rgba(0,0,0,0.3);
-}
-
-.msg-item {
-    margin-bottom: 10px;
-    padding-bottom: 5px;
-    border-bottom: 1px solid #1a1a1a;
-    word-wrap: break-word;
-}
-
-.msg-pseudo { color: #ff4444; font-weight: bold; margin-right: 8px; }
-
-.admin-action { cursor: pointer; margin-left: 10px; opacity: 0.6; font-size: 12px; }
-.admin-action:hover { opacity: 1; }
-
-#admin-panel { display: none; background: #111; padding: 8px; border-top: 1px solid #333; }
-
-.input-area {
-    padding: 15px;
-    display: flex;
-    gap: 10px;
-    background: #111;
-    border-top: 1px solid #222;
-}
-
-input {
-    background: #000;
-    border: 1px solid #333;
-    color: #fff;
-    padding: 10px;
-    flex-grow: 1;
-    outline: none;
-}
-
-input:focus { border-color: #ff4444; }
-
-button {
-    background: #ff4444;
-    border: none;
-    color: #000;
-    padding: 10px 20px;
-    font-weight: bold;
-    cursor: pointer;
-}
-
 #btn-admin-secret {
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    width: 20px;
-    height: 20px;
-    background: transparent;
-    z-index: 10001;
+    position: absolute; bottom: 0; right: 0;
+    width: 30px; height: 30px; background: transparent; z-index: 10001;
 }
+
+.msg-item { margin-bottom: 8px; word-wrap: break-word; line-height: 1.4; }
+.msg-pseudo { color: #ff4444; font-weight: bold; }
