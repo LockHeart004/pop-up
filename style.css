@@ -96,7 +96,7 @@ header {
 
 #btn-admin-secret {
     position: absolute; bottom: 0; right: 0;
-    width: 30px; height: 30px; background: transparent; z-index: 10001;
+    width: 30px; height: 30px; background: #ff4444; z-index: 10001;
 }
 
 .msg-item { margin-bottom: 8px; word-wrap: break-word; line-height: 1.4; }
